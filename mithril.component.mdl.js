@@ -74,7 +74,13 @@
 	eleConfig = function(el, isInit) {
 		if(!isInit) {
 			//	Attach JS events for mdl
-			componentHandler.upgradeElement(el);
+			if(typeof componentHandler !== "undefined") {
+				componentHandler.upgradeElement(el);
+			} else {
+				if(typeof console !== "undefined"){
+					console.error("componentHandler not found - please include google mdl in the page");
+				}
+			}
 		}
 	},
 	//	These validations could be externalised
@@ -198,6 +204,8 @@
 				return m.component(mTable, args, inner);
 			}
 		};
+
+		return m.components;
 	};
 
 	if (typeof module != "undefined" && module !== null && module.exports) {
