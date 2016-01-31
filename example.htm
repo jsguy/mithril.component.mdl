@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="lib/mdl/material.blue-red.min.css">
+	<link rel="stylesheet" href="lib/mdl/mat_and_icons.css">
+	<script src="lib/mithril.js"></script>
+	<script src="lib/mdl/material.min.js"></script>
+	<script src="mithril.component.mdl.js"></script>
+	<script src="lib/mithril.sugartags.js"></script>
+</head>
+<body>
+<div id="example"></div>
+	
+<script>
+var Demo = {
+	controller: function() {
+		return {
+			something: function(){
+				console.log('you clicked');
+			}
+		}
+	},
+
+	view: function(ctrl) {
+		return m("div", [
+			DIV({className: "row"}, [
+				m.components.mInput({id: "numbox", state: {
+					validate: "numeric",
+					label: "Enter a number please...",
+					error: "Sir, that's not a number!"}
+				})
+			]),
+			DIV({className: "row"}, [
+				m.components.mTable({state: {selectable: true}}, [
+					m('thead', [
+		    			m('tr', [
+		      				m('th', {className: "mdl-data-table__cell--non-numeric"}, "Material"),
+		      				m('th', "Quantity"),
+		      				m('th', "Unit price")
+		      			])
+		      		]),
+      				m('tbody', [
+		    			m('tr', [
+			   				m('td', {className: "mdl-data-table__cell--non-numeric"}, "Acrylic (Transparent)"),
+			      			m('td', "25"),
+			      			m('td', "$2.90")
+			      		]),
+		    			m('tr', [
+			   				m('td', {className: "mdl-data-table__cell--non-numeric"}, "Plywood (Birch)"),
+			      			m('td', "50"),
+			      			m('td', "$1.25")
+			      		]),
+		    			m('tr', [
+			   				m('td', {className: "mdl-data-table__cell--non-numeric"}, "Laminate (Gold on Blue)"),
+			      			m('td', "10"),
+			      			m('td', "$2.35")
+			      		])
+			      	])
+	    		])
+			]),
+			DIV({className: "row"}, [
+				m.components.mButton({text: "Hello", onclick: ctrl.something})
+			])
+		]);
+	}
+};
+
+//initialize
+m.mount(document.getElementById("example"), Demo);
+</script>
+
+</body>
+</html>

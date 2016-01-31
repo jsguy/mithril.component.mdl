@@ -1,0 +1,24 @@
+{
+  "name": "mithril.component.mdl",
+  "version": "0.0.1",
+  "description": "Mithril google material design lite components",
+  "main": "mithril.component.mdl.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jsguy/mithril.component.mdl.git"
+  },
+  "keywords": [
+    "mithril",
+    "material",
+    "design"
+  ],
+  "author": "jsguy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jsguy/mithril.component.mdl/issues"
+  },
+  "homepage": "https://github.com/jsguy/mithril.component.mdl#readme"
+}
