@@ -4,11 +4,16 @@
 	<meta charset="UTF-8">
 	<title>Document</title>
 	<link rel="stylesheet" href="lib/mdl/material.blue-red.min.css">
-	<link rel="stylesheet" href="lib/mdl/mat_and_icons.css">
-	<script src="lib/mithril.js"></script>
+    <link rel="stylesheet" href="lib/mdl/mat_and_icons.css">
+    <link rel="stylesheet" href="lib/polyfills/dialog-polyfill.css">
+
+    <script src="lib/mithril.js"></script>
+    <script src="lib/polyfills/dialog-polyfill.js"></script>
 	<script src="lib/mdl/material.min.js"></script>
 	<script src="mithril.component.mdl.js"></script>
 	<script src="lib/mithril.sugartags.js"></script>
+
+
 </head>
 <body>
 <div id="example"></div>
@@ -18,7 +23,8 @@ var Demo = {
 	controller: function() {
 		return {
 			something: function(){
-				console.log('you clicked');
+                //  Show our modal box
+                document.getElementById("dialoggy").showModal();
 			}
 		}
 	},
@@ -60,9 +66,43 @@ var Demo = {
 			      	])
 	    		])
 			]),
-			DIV({className: "row"}, [
-				m.components.mButton({text: "Hello", onclick: ctrl.something})
-			])
+            DIV({className: "row"}, [
+                m.components.mButton({id: "myButton", text: "Hello", onclick: ctrl.something})
+            ]),
+            DIV({className: "row"}, [
+                m.components.mButton({state: {fab: true, colored: true}, id: "myButton", text: "add", onclick: ctrl.something})
+            ]),
+
+            DIV({className: "row"}, [
+                m.components.mButton({state:{colored: true}, text: "G'day", onclick: ctrl.something})
+            ]),
+
+            m.components.mDialog({
+                //  Note: we need the ID, so we can access the dialog element later
+                id: "dialoggy",
+                state: {
+                    closeButton: false,
+                    actions: {
+                        yes: {
+                            text: "Yes",
+                            className: "yes",
+                            action: function(dialog){
+                                console.log("Starting game...");
+                                dialog.close();
+                            }
+                        },
+                        no: {
+                            text: "No",
+                            className: "no",
+                            action: function(dialog){
+                                console.log("Awww...");
+                                dialog.close();
+                            }
+                        }
+                    }
+                }
+            }, "Would you like to play a game?")
+
 		]);
 	}
 };
@@ -70,6 +110,5 @@ var Demo = {
 //initialize
 m.mount(document.getElementById("example"), Demo);
 </script>
-
 </body>
 </html>

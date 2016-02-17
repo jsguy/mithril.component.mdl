@@ -6,7 +6,10 @@
 	var cfgClasses = function(pFix, list, cfg){
 		var result = "";
 		for(i = 0; i < list.length; i += 1) {
-			result += cfg[list[i]]? " " + pFix + list[i]: "";
+			//	Add class if cfg has it
+			result += cfg[list[i]]?
+				" " + pFix + list[i]: 
+				"";
 		}
 		return result;
 	},
@@ -95,13 +98,23 @@
 		//	Config is init function for MDL JS event
 		def.config = eleConfig;
 
+		if(attrs.config) {
+			var oldAttrsConfig = attrs.config;
+			attrs.config = function(){
+				eleConfig.apply(this, arguments);
+				oldAttrsConfig.apply(this, arguments);
+			}
+		}
+
 		var cfg = extend(def, attrs);
+
 		//	Set validation
 		if(attrs.state.validate) {
 			cfg.pattern = validation[attrs.state.validate]?
 				validation[attrs.state.validate]:
 				attrs.state.validate;
 		}
+
 		cfg = extend(cfg,attrs);
 		state = extend({}, cfg).state;
 		delete cfg.state;
@@ -203,6 +216,84 @@
 			} else {
 				return m.component(mTable, args, inner);
 			}
+		};
+
+		var mDialog = {
+			attrs: function(attrs) {
+
+				//	Apply polyfill if required
+				attrs.config = function(el, isInit) {
+					if(!isInit) {
+						if(!el.showModal) {
+							if(typeof dialogPolyfill !== "undefined") {
+								dialogPolyfill.registerDialog(el);
+							} else {
+								if(typeof console !== "undefined"){
+									console.error("dialogPolyfill not found - please include it in the page");
+								}
+							}
+						}
+					}
+				};
+
+				attrs = attrsConfig({
+					className: "mdl-dialog"
+				}, attrs);
+
+				return attrs;
+			},
+			view: function(ctrl, attrs, inner) {
+				attrs = mDialog.attrs(attrs);
+
+				return m('dialog', attrs.cfg, [
+					(attrs.state.title?
+						m('h4', {className: "mdl-dialog__title"}, attrs.state.title):
+						""
+					),
+					m('div', {className: "mdl-dialog__content"}, inner),
+					m('div', {className: "mdl-dialog__actions mdl-dialog__actions--full-width"}, [
+						//	Configure buttons using attrs.state.actions
+						Object.keys(attrs.state.actions).map(function(key) {
+							var action = attrs.state.actions[key];
+							return m('button', {
+								type: "button", 
+								className: "mdl-button" + (action.className? " " + action.className: ""), 
+								onclick: function(e){
+									//	Pass in the dialog element
+									action.action(this.parentNode.parentNode, e);
+								}
+							}, action.text);
+						})
+
+					])
+				]);
+			}
+		};
+
+		m.components.mDialog = function(args, inner){
+			args = args || {};
+			args.state = args.state || {};
+			args.state.actions = args.state.actions || {};
+			args.state.closeButton = typeof args.state.closeButton !== "undefined"?
+				args.state.closeButton:
+				true;
+
+			//	Set defaults
+			args = extend({
+				title: "Dialog"
+			}, args);
+
+			if(args.state.closeButton) {
+				args.state.actions.close = {
+					text: "Close",
+					className: "close",
+					action: function(dialog){
+						dialog.close();
+					}
+				};
+			}
+
+			return m.component(mDialog, args, inner);
 		};
 
 		return m.components;
