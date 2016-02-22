@@ -13,6 +13,20 @@
 		}
 		return result;
 	},
+	//	Sets the arguments correctly for a component that
+	//	can use args and inner values
+	argifyComponent = function(component, args, inner){
+		if(!inner){
+			//	Inner is the 2nd argument, unless args is an object
+			if(Object.prototype.toString.call(args) !== "[object Object]") {
+				return m.component(component, {}, args);
+			} else {
+				return m.component(component, args);
+			}
+		} else {
+			return m.component(component, args, inner);
+		}
+	},
 	extend = function () {
 		// copy reference to target object
 		var target = arguments[0] || {},
@@ -126,9 +140,7 @@
 		m.components = m.components || {};
 
 		var mButton = {
-			//	Modify the attrs here
-			//	Note: this will run each time the DOM is 
-			//	rendered, so don't do anything destructive
+			//	Set button class names
 			attrs: function(attrs) {
 				attrs = attrs || {};
 				attrs.state = attrs.state || {};
@@ -206,16 +218,7 @@
 		};
 
 		m.components.mTable = function(args, inner){
-			if(!inner){
-				//	Inner is the 2nd argument, unless args is an object
-				if(Object.prototype.toString.call(args) !== "[object Object]") {
-					return m.component(mTable, {}, args);
-				} else {
-					return m.component(mTable, args);
-				}
-			} else {
-				return m.component(mTable, args, inner);
-			}
+			return argifyComponent(mTable, args, inner);
 		};
 
 		var mDialog = {
@@ -295,6 +298,39 @@
 
 			return m.component(mDialog, args, inner);
 		};
+
+
+		var mMenu = {
+			//	Modify the attrs here
+			attrs: function(attrs) {
+				attrs = attrs || {};
+				attrs.state = attrs.state || {};
+				var position = attrs.state.position || "bottom-left",
+					//	Build our class name
+					cName = cfgClasses("mdl-js-", ["ripple-effect"], attrs.state) +
+					" mdl-menu--" + position;
+
+				return attrsConfig({
+					className: "mdl-menu mdl-js-menu" + cName
+				}, attrs);
+			},
+
+			view: function(ctrl, attrs, inner) {
+				attrs = mMenu.attrs(attrs);
+			    return m('ul', attrs.cfg, inner);
+			}
+		};
+
+		m.components.mMenu = function(args, inner){
+			return argifyComponent(mMenu, extend({
+				state: {
+					"ripple-effect": true,
+					//	Where to align the menu: top/bottom-left/right
+					position: "top-left"
+				}
+			}, args), inner);
+		};
+
 
 		return m.components;
 	};

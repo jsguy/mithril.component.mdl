@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="lib/mdl/mat_and_icons.css">
     <link rel="stylesheet" href="lib/polyfills/dialog-polyfill.css">
 
+    <!-- testing with FA -->
+    <link rel="stylesheet" href="../font-awesome-4.5.0/css/font-awesome.css">
+
     <script src="lib/mithril.js"></script>
     <script src="lib/polyfills/dialog-polyfill.js"></script>
 	<script src="lib/mdl/material.min.js"></script>
@@ -66,17 +69,27 @@ var Demo = {
 			      	])
 	    		])
 			]),
+            //  A menu has: 1. A button, 2: An unordered list, 3: Items in the list
             DIV({className: "row"}, [
-                m.components.mButton({id: "myButton", text: "Hello", onclick: ctrl.something})
+                //m.components.mButton({id: "menuButton1", text: "Menu"}),
+
+                m.components.mButton({state: {fab: true, colored: true}, id: "menuButton1", text: "add"}),
+
+
+                m.components.mMenu({"for": "menuButton1"},[
+                    m('li', {className: "mdl-menu__item mdl-menu__item--full-bleed-divider", onclick: ctrl.something}, "Action 1"),
+                    m('li', {disabled: "disabled", className: "mdl-menu__item"}, "Action 2"),
+                    
+                    m('li', {className: "mdl-menu__item", onclick: ctrl.something}, "Action 3")
+                ])
             ]),
             DIV({className: "row"}, [
-                m.components.mButton({state: {fab: true, colored: true}, id: "myButton", text: "add", onclick: ctrl.something})
+                m.components.mButton({id: "myButton", text: "Hello", onclick: ctrl.something}),
+
+                m.components.mButton({state:{colored: true}, text: I({className: "fa fa-heart"}), onclick: ctrl.something})
             ]),
 
-            DIV({className: "row"}, [
-                m.components.mButton({state:{colored: true}, text: "G'day", onclick: ctrl.something})
-            ]),
-
+            //  Create our dialog
             m.components.mDialog({
                 //  Note: we need the ID, so we can access the dialog element later
                 id: "dialoggy",
@@ -110,5 +123,6 @@ var Demo = {
 //initialize
 m.mount(document.getElementById("example"), Demo);
 </script>
+
 </body>
 </html>
