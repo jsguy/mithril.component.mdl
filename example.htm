@@ -86,10 +86,15 @@ var Demo = {
                     m('li', {className: "mdl-menu__item", onclick: ctrl.something}, "Action 3")
                 ])
             ]),
+
             DIV({className: "row"}, [
                 m.components.mButton({id: "myButton", text: "Hello", onclick: ctrl.something}),
 
                 m.components.mButton({state:{colored: true}, text: I({className: "fa fa-heart"}), onclick: ctrl.something})
+            ]),
+
+            DIV({className: "row"}, [
+                m.components.mLinkButton({id: "myLinkButton", text: "Link hello", href: "#"})
             ]),
 
             //  Create our dialog

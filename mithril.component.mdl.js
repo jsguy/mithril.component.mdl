@@ -157,7 +157,8 @@
 			//	from the default controller.
 			view: function(ctrl, attrs) {
 				attrs = mButton.attrs(attrs);
-			    return m('button', attrs.cfg,
+				//	If there is a href, we assume this is a link button
+			    return m(attrs.href? 'a': 'button', attrs.cfg,
 			    	(attrs.state.fab || attrs.state.icon? 
 			    		m('i', {className: "material-icons"}, attrs.cfg.text): 
 			    		attrs.cfg.text)
@@ -165,7 +166,24 @@
 			}
 		};
 
+		//	Button using the "button" element
+		//	Use this for buttons that have events assigned
 		m.components.mButton = function(args){
+			//	Sensible default settings
+			return m.component(mButton, extend({
+				state: {
+					colored: true,
+					raised: true,
+					"ripple-effect": true
+				}
+			}, args));
+		};
+
+		//	Button using an anchor element
+		//	Use this for buttons that might link somewhere
+		m.components.mLinkButton = function(args){
+			args = args || {};
+			args.href = args.href || "#";
 			//	Sensible default settings
 			return m.component(mButton, extend({
 				state: {
