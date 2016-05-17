@@ -27,6 +27,15 @@
 			return m.component(component, args, inner);
 		}
 	},
+	//	Excludes certain attributes
+	attrExclude = function(args, exclude) {
+		exclude = exclude || [];
+		var result = {}, i;
+		for(var i in args) {if(args.hasOwnProperty(i) && exclude.indexOf(i) == -1){
+			result[i] = args[i];
+		}}
+		return result;
+	},
 	extend = function () {
 		// copy reference to target object
 		var target = arguments[0] || {},
@@ -158,7 +167,7 @@
 			view: function(ctrl, attrs) {
 				attrs = mButton.attrs(attrs);
 				//	If there is a href, we assume this is a link button
-			    return m(attrs.href? 'a': 'button', attrs.cfg,
+			    return m(attrs.cfg.href? 'a': 'button', attrExclude(attrs.cfg, ['text']),
 			    	(attrs.state.fab || attrs.state.icon? 
 			    		m('i', {className: "material-icons"}, attrs.cfg.text): 
 			    		attrs.cfg.text)
