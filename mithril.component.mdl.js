@@ -129,7 +129,9 @@
 			}
 		}
 
-		var cfg = extend(def, attrs);
+		//	Grab old classname, setup cfg
+		var defClassName = def.className || def["class"],
+			cfg = extend(def, attrs);
 
 		//	Set validation
 		if(attrs.state.validate) {
@@ -138,7 +140,21 @@
 				attrs.state.validate;
 		}
 
-		cfg = extend(cfg,attrs);
+		//	Extend again, as it may have a new pattern
+		cfg = extend(cfg, attrs);
+
+		var cfgClassName = cfg.className || cfg["class"];
+
+		if(cfgClassName) {
+			if(defClassName !== cfgClassName) {
+				if(cfg["class"]) {
+					cfg["class"] = defClassName + " " + cfg["class"];
+				} else {
+					cfg.className = defClassName + " " + cfg.className;
+				}
+			}
+		}
+
 		state = extend({}, cfg).state;
 		delete cfg.state;
 		return {cfg: cfg, state: state};
