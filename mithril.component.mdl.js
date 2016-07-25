@@ -3,6 +3,7 @@
 */
 ;(function(){
 
+var mithrilMdlComponents = function(m){
 	var cfgClasses = function(pFix, list, cfg){
 		var result = "";
 		for(i = 0; i < list.length; i += 1) {
@@ -160,232 +161,230 @@
 		return {cfg: cfg, state: state};
 	};
 
-	var mithrilMdlComponents = function(m){
+	m.components = m.components || {};
 
-		m.components = m.components || {};
+	var mButton = {
+		//	Set button class names
+		attrs: function(attrs) {
+			attrs = attrs || {};
+			attrs.state = attrs.state || {};
 
-		var mButton = {
-			//	Set button class names
-			attrs: function(attrs) {
-				attrs = attrs || {};
-				attrs.state = attrs.state || {};
+			//	Build our class name
+			var cName = cfgClasses("mdl-button--", ["raised", "fab", "mini-fab", "icon", "colored", "primary", "accent"], attrs.state) +
+				cfgClasses("mdl-js-", ["ripple-effect"], attrs.state);
 
-				//	Build our class name
-				var cName = cfgClasses("mdl-button--", ["raised", "fab", "mini-fab", "icon", "colored", "primary", "accent"], attrs.state) +
-					cfgClasses("mdl-js-", ["ripple-effect"], attrs.state);
+			return attrsConfig({
+				className: "mdl-button mdl-js-button" + cName
+			}, attrs);
+		},
+		//	Always use the attrs, not ctrl, as it isn't returned 
+		//	from the default controller.
+		view: function(ctrl, attrs) {
+			attrs = mButton.attrs(attrs);
+			//	If there is a href, we assume this is a link button
+		    return m(attrs.cfg.href? 'a': 'button', attrExclude(attrs.cfg, ['text']),
+		    	(attrs.state.fab || attrs.state.icon? 
+		    		m('i', {className: "material-icons"}, attrs.cfg.text): 
+		    		attrs.cfg.text)
+		    );
+		}
+	};
 
-				return attrsConfig({
-					className: "mdl-button mdl-js-button" + cName
-				}, attrs);
-			},
-			//	Always use the attrs, not ctrl, as it isn't returned 
-			//	from the default controller.
-			view: function(ctrl, attrs) {
-				attrs = mButton.attrs(attrs);
-				//	If there is a href, we assume this is a link button
-			    return m(attrs.cfg.href? 'a': 'button', attrExclude(attrs.cfg, ['text']),
-			    	(attrs.state.fab || attrs.state.icon? 
-			    		m('i', {className: "material-icons"}, attrs.cfg.text): 
-			    		attrs.cfg.text)
-			    );
+	//	Button using the "button" element
+	//	Use this for buttons that have events assigned
+	m.components.mButton = function(args){
+		//	Sensible default settings
+		return m.component(mButton, extend({
+			state: {
+				colored: true,
+				raised: true,
+				"ripple-effect": true
 			}
-		};
+		}, args));
+	};
 
-		//	Button using the "button" element
-		//	Use this for buttons that have events assigned
-		m.components.mButton = function(args){
-			//	Sensible default settings
-			return m.component(mButton, extend({
-				state: {
-					colored: true,
-					raised: true,
-					"ripple-effect": true
-				}
-			}, args));
-		};
-
-		//	Button using an anchor element
-		//	Use this for buttons that might link somewhere
-		m.components.mLinkButton = function(args){
-			args = args || {};
-			args.href = args.href || "#";
-			//	Sensible default settings
-			return m.component(mButton, extend({
-				state: {
-					colored: true,
-					raised: true,
-					"ripple-effect": true
-				}
-			}, args));
-		};
-
-
-		var mInput = {
-			attrs: function(attrs) {
-				return attrsConfig({
-					className: "mdl-textfield__input",
-					type: "text"
-				}, attrs);
-			},
-			view: function(ctrl, attrs) {
-				attrs = mInput.attrs(attrs);
-				return m('div', {className: "mdl-textfield mdl-js-textfield"}, [
-					m('input', attrs.cfg),
-					m('label', {className: "mdl-textfield__label", "for": attrs.cfg.id}, attrs.state.label),
-					m('span', {className: "mdl-textfield__error"}, attrs.state.error)
-				]);
+	//	Button using an anchor element
+	//	Use this for buttons that might link somewhere
+	m.components.mLinkButton = function(args){
+		args = args || {};
+		args.href = args.href || "#";
+		//	Sensible default settings
+		return m.component(mButton, extend({
+			state: {
+				colored: true,
+				raised: true,
+				"ripple-effect": true
 			}
-		};
-
-		m.components.mInput = function(args){
-			return m.component(mInput, args);
-		};
+		}, args));
+	};
 
 
-		var mTable = {
-			attrs: function(attrs) {
-				attrs = attrsConfig({
-					className: "mdl-data-table mdl-js-data-table mdl-shadow--2dp"
-				}, attrs);
+	var mInput = {
+		attrs: function(attrs) {
+			return attrsConfig({
+				className: "mdl-textfield__input",
+				type: "text"
+			}, attrs);
+		},
+		view: function(ctrl, attrs) {
+			attrs = mInput.attrs(attrs);
+			return m('div', {className: "mdl-textfield mdl-js-textfield"}, [
+				m('input', attrs.cfg),
+				m('label', {className: "mdl-textfield__label", "for": attrs.cfg.id}, attrs.state.label),
+				m('span', {className: "mdl-textfield__error"}, attrs.state.error)
+			]);
+		}
+	};
 
-				if(attrs.state.selectable) {
-					attrs.cfg.className += " mdl-data-table--selectable";
-				}
+	m.components.mInput = function(args){
+		return m.component(mInput, args);
+	};
 
-				return attrs;
-			},
-			view: function(ctrl, attrs, inner) {
-				attrs = mTable.attrs(attrs);
-				return m('table', attrs.cfg, inner);
+
+	var mTable = {
+		attrs: function(attrs) {
+			attrs = attrsConfig({
+				className: "mdl-data-table mdl-js-data-table mdl-shadow--2dp"
+			}, attrs);
+
+			if(attrs.state.selectable) {
+				attrs.cfg.className += " mdl-data-table--selectable";
 			}
-		};
 
-		m.components.mTable = function(args, inner){
-			return argifyComponent(mTable, args, inner);
-		};
+			return attrs;
+		},
+		view: function(ctrl, attrs, inner) {
+			attrs = mTable.attrs(attrs);
+			return m('table', attrs.cfg, inner);
+		}
+	};
 
-		var mDialog = {
-			attrs: function(attrs) {
+	m.components.mTable = function(args, inner){
+		return argifyComponent(mTable, args, inner);
+	};
 
-				//	Apply polyfill if required
-				attrs.config = function(el, isInit) {
-					if(!isInit) {
-						if(!el.showModal) {
-							if(typeof dialogPolyfill !== "undefined") {
-								dialogPolyfill.registerDialog(el);
-							} else {
-								if(typeof console !== "undefined"){
-									console.error("dialogPolyfill not found - please include it in the page");
-								}
+	var mDialog = {
+		attrs: function(attrs) {
+
+			//	Apply polyfill if required
+			attrs.config = function(el, isInit) {
+				if(!isInit) {
+					if(!el.showModal) {
+						if(typeof dialogPolyfill !== "undefined") {
+							dialogPolyfill.registerDialog(el);
+						} else {
+							if(typeof console !== "undefined"){
+								console.error("dialogPolyfill not found - please include it in the page");
 							}
 						}
 					}
-				};
-
-				attrs = attrsConfig({
-					className: "mdl-dialog"
-				}, attrs);
-
-				return attrs;
-			},
-			view: function(ctrl, attrs, inner) {
-				attrs = mDialog.attrs(attrs);
-
-				return m('dialog', attrs.cfg, [
-					(attrs.state.title?
-						m('h4', {className: "mdl-dialog__title"}, attrs.state.title):
-						""
-					),
-					m('div', {className: "mdl-dialog__content"}, inner),
-					m('div', {className: "mdl-dialog__actions mdl-dialog__actions--full-width"}, [
-						//	Configure buttons using attrs.state.actions
-						Object.keys(attrs.state.actions).map(function(key) {
-							var action = attrs.state.actions[key];
-							return m('button', {
-								type: "button", 
-								className: "mdl-button" + (action.className? " " + action.className: ""), 
-								onclick: function(e){
-									//	Pass in the dialog element
-									action.action(this.parentNode.parentNode, e);
-								}
-							}, action.text);
-						})
-
-					])
-				]);
-			}
-		};
-
-		m.components.mDialog = function(args, inner){
-			args = args || {};
-			args.state = args.state || {};
-			args.state.actions = args.state.actions || {};
-			args.state.closeButton = typeof args.state.closeButton !== "undefined"?
-				args.state.closeButton:
-				true;
-
-			//	Set defaults
-			args = extend({
-				title: "Dialog"
-			}, args);
-
-			if(args.state.closeButton) {
-				args.state.actions.close = {
-					text: "Close",
-					className: "close",
-					action: function(dialog){
-						dialog.close();
-					}
-				};
-			}
-
-			return m.component(mDialog, args, inner);
-		};
-
-
-		var mMenu = {
-			//	Modify the attrs here
-			attrs: function(attrs) {
-				attrs = attrs || {};
-				attrs.state = attrs.state || {};
-				var position = attrs.state.position || "bottom-left",
-					//	Build our class name
-					cName = cfgClasses("mdl-js-", ["ripple-effect"], attrs.state) +
-					" mdl-menu--" + position;
-
-				return attrsConfig({
-					className: "mdl-menu mdl-js-menu" + cName
-				}, attrs);
-			},
-
-			view: function(ctrl, attrs, inner) {
-				attrs = mMenu.attrs(attrs);
-			    return m('ul', attrs.cfg, inner);
-			}
-		};
-
-		m.components.mMenu = function(args, inner){
-			return argifyComponent(mMenu, extend({
-				state: {
-					"ripple-effect": true,
-					//	Where to align the menu: top/bottom-left/right
-					position: "top-left"
 				}
-			}, args), inner);
-		};
+			};
 
+			attrs = attrsConfig({
+				className: "mdl-dialog"
+			}, attrs);
 
-		return m.components;
+			return attrs;
+		},
+		view: function(ctrl, attrs, inner) {
+			attrs = mDialog.attrs(attrs);
+
+			return m('dialog', attrs.cfg, [
+				(attrs.state.title?
+					m('h4', {className: "mdl-dialog__title"}, attrs.state.title):
+					""
+				),
+				m('div', {className: "mdl-dialog__content"}, inner),
+				m('div', {className: "mdl-dialog__actions mdl-dialog__actions--full-width"}, [
+					//	Configure buttons using attrs.state.actions
+					Object.keys(attrs.state.actions).map(function(key) {
+						var action = attrs.state.actions[key];
+						return m('button', {
+							type: "button", 
+							className: "mdl-button" + (action.className? " " + action.className: ""), 
+							onclick: function(e){
+								//	Pass in the dialog element
+								action.action(this.parentNode.parentNode, e);
+							}
+						}, action.text);
+					})
+
+				])
+			]);
+		}
 	};
 
-	if (typeof module != "undefined" && module !== null && module.exports) {
-		module.exports = mithrilMdlComponents;
-	} else if (typeof define === "function" && define.amd) {
-		define(function() {
-			return mithrilMdlComponents;
-		});
-	} else {
-		mithrilMdlComponents(typeof window != "undefined"? window.m || {}: {});
-	}
+	m.components.mDialog = function(args, inner){
+		args = args || {};
+		args.state = args.state || {};
+		args.state.actions = args.state.actions || {};
+		args.state.closeButton = typeof args.state.closeButton !== "undefined"?
+			args.state.closeButton:
+			true;
+
+		//	Set defaults
+		args = extend({
+			title: "Dialog"
+		}, args);
+
+		if(args.state.closeButton) {
+			args.state.actions.close = {
+				text: "Close",
+				className: "close",
+				action: function(dialog){
+					dialog.close();
+				}
+			};
+		}
+
+		return m.component(mDialog, args, inner);
+	};
+
+
+	var mMenu = {
+		//	Modify the attrs here
+		attrs: function(attrs) {
+			attrs = attrs || {};
+			attrs.state = attrs.state || {};
+			var position = attrs.state.position || "bottom-left",
+				//	Build our class name
+				cName = cfgClasses("mdl-js-", ["ripple-effect"], attrs.state) +
+				" mdl-menu--" + position;
+
+			return attrsConfig({
+				className: "mdl-menu mdl-js-menu" + cName
+			}, attrs);
+		},
+
+		view: function(ctrl, attrs, inner) {
+			attrs = mMenu.attrs(attrs);
+		    return m('ul', attrs.cfg, inner);
+		}
+	};
+
+	m.components.mMenu = function(args, inner){
+		return argifyComponent(mMenu, extend({
+			state: {
+				"ripple-effect": true,
+				//	Where to align the menu: top/bottom-left/right
+				position: "top-left"
+			}
+		}, args), inner);
+	};
+
+
+	return m.components;
+};
+
+if (typeof module != "undefined" && module !== null && module.exports) {
+	module.exports = mithrilMdlComponents;
+} else if (typeof define === "function" && define.amd) {
+	define(function() {
+		return mithrilMdlComponents;
+	});
+} else {
+	mithrilMdlComponents(typeof window != "undefined"? window.m || {}: {});
+}
 
 }());
