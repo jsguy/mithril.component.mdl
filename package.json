@@ -1,6 +1,6 @@
 {
   "name": "mithril.component.mdl",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Mithril google material design lite components",
   "main": "mithril.component.mdl.js",
   "scripts": {

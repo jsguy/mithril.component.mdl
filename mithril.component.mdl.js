@@ -374,6 +374,31 @@ var mithrilMdlComponents = function(m){
 	};
 
 
+	var mSnackbar = {
+		//	Set the default attrs here
+		attrs: function(attrs) {
+			attrs = attrs || {};
+			attrs.state = attrs.state || {};
+
+			return attrsConfig({
+				className: "mdl-js-snackbar mdl-snackbar"
+			}, attrs);
+		},
+
+		view: function(ctrl, attrs, inner) {
+			attrs = mSnackbar.attrs(attrs);
+		    return m('div', attrs.cfg, [
+				m('div', {className: "mdl-snackbar__text"}),
+				m('button', {type: "button", className: "mdl-snackbar__action"})
+			]);
+		}
+	};
+
+	m.components.mSnackbar = function(args, inner){
+		return m.component(mSnackbar, args, inner);
+	};
+
+
 	return m.components;
 };
 

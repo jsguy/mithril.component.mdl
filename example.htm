@@ -27,12 +27,30 @@
 <script>
 var Demo = {
 	controller: function() {
+		var mainScreenTurnOff = function(){
+			//	Remove snackbar, ref: http://stackoverflow.com/a/40118310
+      		document.getElementById("snacky").MaterialSnackbar.cleanup_();
+
+			document.getElementById("snacky").MaterialSnackbar.showSnackbar({
+				message: 'Main screen turn off',
+				timeout: 3000
+			});
+		};
 		return {
 			something: function(){
                 //  Show our modal box
                 document.getElementById("dialoggy").showModal();
+                //	Run our snackbar
+
+				document.getElementById("snacky").MaterialSnackbar.showSnackbar({
+					message: 'Main screen turn on',
+					timeout: 5000,
+					actionHandler: mainScreenTurnOff,
+					actionText: 'Undo'
+			    });
 			}
 		}
+
 	},
 
 	view: function(ctrl) {
@@ -122,7 +140,10 @@ var Demo = {
                         }
                     }
                 }
-            }, "Would you like to play a game?")
+            }, "Would you like to play a game?"),
+
+            //	Create a snackbar, with an ID
+            m.components.mSnackbar({id: "snacky"})
 
 		]);
 	}
