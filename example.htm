@@ -30,24 +30,25 @@ var Demo = {
 		var mainScreenTurnOff = function(){
 			//	Remove snackbar, ref: http://stackoverflow.com/a/40118310
       		document.getElementById("snacky").MaterialSnackbar.cleanup_();
-
 			document.getElementById("snacky").MaterialSnackbar.showSnackbar({
-				message: 'Main screen turn off',
+				message: 'How are you, gentlemen?',
 				timeout: 3000
 			});
 		};
 		return {
-			something: function(){
-                //  Show our modal box
-                document.getElementById("dialoggy").showModal();
-                //	Run our snackbar
-
+			snack: function(e){
+				e.preventDefault();
+                //	Rock the snackbar
 				document.getElementById("snacky").MaterialSnackbar.showSnackbar({
 					message: 'Main screen turn on',
 					timeout: 5000,
 					actionHandler: mainScreenTurnOff,
 					actionText: 'Undo'
 			    });
+			},
+			something: function(){
+                //  Show our modal box
+                document.getElementById("dialoggy").showModal();
 			}
 		}
 
@@ -112,7 +113,7 @@ var Demo = {
             ]),
 
             DIV({className: "row"}, [
-                m.components.mLinkButton({id: "myLinkButton", text: "Link hello", href: "#"})
+                m.components.mLinkButton({id: "myLinkButton", text: "Link button snack", onclick: ctrl.snack, href: "#"})
             ]),
 
             //  Create our dialog
