@@ -13,8 +13,9 @@
     <script src="lib/mithril.js"></script>
     <script src="lib/polyfills/dialog-polyfill.js"></script>
 	<script src="lib/mdl/material.min.js"></script>
-	<script src="mithril.component.mdl.js"></script>
 	<script src="lib/mithril.sugartags.js"></script>
+	<script src="lib/mithril.bindings.js"></script>
+	<script src="mithril.component.mdl.js"></script>
 
 	<style>
 		.row {position: relative;}
@@ -57,7 +58,7 @@ var Demo = {
 	view: function(ctrl) {
 		return m("div", [
 			DIV({className: "row"}, [
-				m.components.mInput({id: "numbox", state: {
+				m.components.mInput({id: "numbox", value: m.prop("3"), state: {
 					validate: "numeric",
 					label: "Enter a number please...",
 					error: "Sir, that's not a number!"}

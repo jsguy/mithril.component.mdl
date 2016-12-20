@@ -229,7 +229,7 @@ var mithrilMdlComponents = function(m){
 		view: function(ctrl, attrs) {
 			attrs = mInput.attrs(attrs);
 			return m('div', {className: "mdl-textfield mdl-js-textfield"}, [
-				m('input', attrs.cfg),
+				m.e('input', attrs.cfg),
 				m('label', {className: "mdl-textfield__label", "for": attrs.cfg.id}, attrs.state.label),
 				m('span', {className: "mdl-textfield__error"}, attrs.state.error)
 			]);
