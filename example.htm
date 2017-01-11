@@ -24,7 +24,7 @@
 </head>
 <body>
 <div id="example"></div>
-	
+
 <script>
 var Demo = {
 	controller: function() {
@@ -65,6 +65,12 @@ var Demo = {
 				})
 			]),
 			DIV({className: "row"}, [
+				m.components.mInput({id: "passwordbox", state: {
+					cfg: {type: "password"},
+					label: "Enter a password"
+				}})
+			]),
+			DIV({className: "row"}, [
 				m.components.mTable({state: {selectable: true}}, [
 					m('thead', [
 		    			m('tr', [
@@ -102,7 +108,7 @@ var Demo = {
                 m.components.mMenu({"for": "menuButton1"},[
                     m('li', {className: "mdl-menu__item mdl-menu__item--full-bleed-divider", onclick: ctrl.something}, "Action 1"),
                     m('li', {disabled: "disabled", className: "mdl-menu__item"}, "Action 2"),
-                    
+
                     m('li', {className: "mdl-menu__item", onclick: ctrl.something}, "Action 3")
                 ])
             ]),

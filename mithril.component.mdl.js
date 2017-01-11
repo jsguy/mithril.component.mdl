@@ -1,4 +1,4 @@
-/*	
+/*
 	This creates google materials design lite mithril components
 */
 ;(function(){
@@ -9,7 +9,7 @@ var mithrilMdlComponents = function(m){
 		for(i = 0; i < list.length; i += 1) {
 			//	Add class if cfg has it
 			result += cfg[list[i]]?
-				" " + pFix + list[i]: 
+				" " + pFix + list[i]:
 				"";
 		}
 		return result;
@@ -134,6 +134,11 @@ var mithrilMdlComponents = function(m){
 		var defClassName = def.className || def["class"],
 			cfg = extend(def, attrs);
 
+		//	Allow CFG override from state
+		if(attrs.state && attrs.state.cfg) {
+			cfg = extend(cfg, attrs.state.cfg);
+		}
+
 		//	Set validation
 		if(attrs.state.validate) {
 			cfg.pattern = validation[attrs.state.validate]?
@@ -177,14 +182,14 @@ var mithrilMdlComponents = function(m){
 				className: "mdl-button mdl-js-button" + cName
 			}, attrs);
 		},
-		//	Always use the attrs, not ctrl, as it isn't returned 
+		//	Always use the attrs, not ctrl, as it isn't returned
 		//	from the default controller.
 		view: function(ctrl, attrs) {
 			attrs = mButton.attrs(attrs);
 			//	If there is a href, we assume this is a link button
 		    return m(attrs.cfg.href? 'a': 'button', attrExclude(attrs.cfg, ['text']),
-		    	(attrs.state.fab || attrs.state.icon? 
-		    		m('i', {className: "material-icons"}, attrs.cfg.text): 
+		    	(attrs.state.fab || attrs.state.icon?
+		    		m('i', {className: "material-icons"}, attrs.cfg.text):
 		    		attrs.cfg.text)
 		    );
 		}
@@ -301,8 +306,8 @@ var mithrilMdlComponents = function(m){
 					Object.keys(attrs.state.actions).map(function(key) {
 						var action = attrs.state.actions[key];
 						return m('button', {
-							type: "button", 
-							className: "mdl-button" + (action.className? " " + action.className: ""), 
+							type: "button",
+							className: "mdl-button" + (action.className? " " + action.className: ""),
 							onclick: function(e){
 								//	Pass in the dialog element
 								action.action(this.parentNode.parentNode, e);
